@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Absensi Online</title>
+    
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome untuk Ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <style>
+        /* CSS untuk Desain Modern, Simple, dan Responsif */
+        :root {
+            --primary-color: #007bff;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --secondary-color: #6c757d;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #eef2f7;
+            color: var(--dark-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background-color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .school-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex-grow: 1;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .form-container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .form-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.8rem;
+            color: var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        /* Opsi Absensi */
+        .attendance-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 1rem;
+        }
+
+        .attendance-option {
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .attendance-option input[type="radio"] {
+            display: none;
+        }
+
+        .attendance-option i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .attendance-option.hadir i { color: var(--success-color); }
+        .attendance-option.sakit i { color: var(--warning-color); }
+        .attendance-option.izin i { color: var(--primary-color); }
+        .attendance-option.alfa i { color: var(--danger-color); }
+
+        .attendance-option.selected {
+            border-color: var(--primary-color);
+            background-color: #e7f1ff;
+        }
+
+        /* Button */
+        .btn {
+            width: 100%;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            background-color: var(--primary-color);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--dark-color);
+            color: white;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        /* Loading & Success Message */
+        #loading, #success-message, #error-message {
+            display: none;
+            text-align: center;
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 5px;
+        }
+
+        #loading { color: var(--primary-color); }
+        #success-message { color: var(--success-color); border: 1px solid var(--success-color); background-color: #d4edda; }
+        #error-message { color: var(--danger-color); border: 1px solid var(--danger-color); background-color: #f8d7da; }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .header {
+                padding: 1rem;
+            }
+            .school-name {
+                font-size: 1.2rem;
+            }
+            .main-content {
+                padding: 1rem;
+            }
+            .form-container {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">SMK</div>
+        <h1 class="school-name">SMK Negeri 1 Jakarta</h1>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="form-container">
+            <h2 class="form-title">Form Absensi Siswa</h2>
+            <form id="attendanceForm">
+                <div class="form-group">
+                    <label for="nama">Nama Lengkap</label>
+                    <input type="text" id="nama" name="nama" class="form-control" placeholder="Masukkan nama lengkap" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="kelas">Kelas</label>
+                    <select id="kelas" name="kelas" class="form-control" required>
+                        <option value="">-- Pilih Kelas --</option>
+                        <option value="X-1">X-1</option>
+                        <option value="X-2">X-2</option>
+                        <option value="X-3">X-3</option>
+                        <option value="X-4">X-4</option>
+                        <option value="X-5">X-5</option>
+                        <option value="X-6">X-6</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Kehadiran</label>
+                    <div class="attendance-options">
+                        <label class="attendance-option hadir">
+                            <input type="radio" name="absensi" value="Hadir" required>
+                            <i class="fas fa-user-check"></i>
+                            <span>Hadir</span>
+                        </label>
+                        <label class="attendance-option sakit">
+                            <input type="radio" name="absensi" value="Sakit">
+                            <i class="fas fa-thermometer-half"></i>
+                            <span>Sakit</span>
+                        </label>
+                        <label class="attendance-option izin">
+                            <input type="radio" name="absensi" value="Izin">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Izin</span>
+                        </label>
+                        <label class="attendance-option alfa">
+                            <input type="radio" name="absensi" value="Alfa">
+                            <i class="fas fa-user-times"></i>
+                            <span>Alfa</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="catatan">Catatan (Opsional)</label>
+                    <textarea id="catatan" name="catatan" class="form-control" rows="3" placeholder="Jelaskan jika sakit atau izin..."></textarea>
+                </div>
+
+                <button type="submit" class="btn">Kirim Absensi</button>
+                
+                <div id="loading"><i class="fas fa-spinner fa-spin"></i> Mengirim data...</div>
+                <div id="success-message"><i class="fas fa-check-circle"></i> Absensi berhasil dikirim!</div>
+                <div id="error-message"><i class="fas fa-exclamation-circle"></i> Terjadi kesalahan, silakan coba lagi.</div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 copyright@rzcloud</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('attendanceForm');
+            const attendanceOptions = document.querySelectorAll('.attendance-option');
+            const loadingDiv = document.getElementById('loading');
+            const successDiv = document.getElementById('success-message');
+            const errorDiv = document.getElementById('error-message');
+
+            // Ganti tampilan opsi absensi saat diklik
+            attendanceOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    attendanceOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+
+            // Ganti URL ini dengan URL Web App dari Google Apps Script Anda nanti
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbwHbwkClk-54Ed9WM9iyjMcB5n9q12RlAfH2j-Ajeu3rFb0HpzYrwF-Vzz3s8mPaXXP1w/exec';
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Tampilkan loading, sembunyikan pesan lainnya
+                loadingDiv.style.display = 'block';
+                successDiv.style.display = 'none';
+                errorDiv.style.display = 'none';
+
+                const formData = new FormData(form);
+
+                fetch(scriptURL, { method: 'POST', body: formData })
+                    .then(response => {
+                        loadingDiv.style.display = 'none';
+                        if (response.ok) {
+                            // Tampilkan pesan sukses
+                            successDiv.style.display = 'block';
+                            form.reset();
+                            attendanceOptions.forEach(opt => opt.classList.remove('selected'));
+                        } else {
+                            throw new Error('Network response was not ok.');
+                        }
+                    })
+                    .catch(error => {
+                        loadingDiv.style.display = 'none';
+                        console.error('Error!', error.message);
+                        // Tampilkan pesan error
+                        errorDiv.style.display = 'block';
+                    });
+            });
+        });
+    </script>
+</body>
+</html>
